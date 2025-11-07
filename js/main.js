@@ -125,3 +125,115 @@ document.addEventListener("DOMContentLoaded", () => {
     update();
   });
 });
+
+(function () {
+  const viewport = document.querySelector('.testimonial-viewport');
+  const track = document.querySelector('.testimonial-track');
+  const prevBtn = document.querySelector('.testimonial-btn.prev');
+  const nextBtn = document.querySelector('.testimonial-btn.next');
+  const cardWidth = () => (track.querySelector('.testimonial-card')?.offsetWidth || 320) + 20; // card + gap
+  let isDown = false, startX, scrollStart;
+  let autoplayInterval = null;
+  const AUTOPLAY_MS = 3500;
+  let userInteracting = false;
+
+  /* Helper: smoothly scroll by pixels */
+  function scrollByPixels(px) {
+    viewport.scrollBy({ left: px, behavior: 'smooth' });
+  }
+
+  /* Prev / Next button handlers */
+  prevBtn.addEventListener('click', () => {
+    scrollByPixels(-cardWidth());
+    pauseAutoplayTemporarily();
+  });
+  nextBtn.addEventListener('click', () => {
+    scrollByPixels(cardWidth());
+    pauseAutoplayTemporarily();
+  });
+
+  /* Pointer (mouse) drag support */
+  viewport.addEventListener('mousedown', (e) => {
+    isDown = true;
+    userInteracting = true;
+    startX = e.pageX - viewport.offsetLeft;
+    scrollStart = viewport.scrollLeft;
+    viewport.classList.add('dragging');
+  });
+  viewport.addEventListener('mouseleave', () => {
+    isDown = false;
+    viewport.classList.remove('dragging');
+  });
+  viewport.addEventListener('mouseup', () => {
+    isDown = false;
+    viewport.classList.remove('dragging');
+    userInteracting = false;
+  });
+  viewport.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - viewport.offsetLeft;
+    const walk = (x - startX) * 1.2; // drag speed multiplier
+    viewport.scrollLeft = scrollStart - walk;
+  });
+
+  /* Touch support */
+  viewport.addEventListener('touchstart', (e) => {
+    userInteracting = true;
+    startX = e.touches[0].pageX - viewport.offsetLeft;
+    scrollStart = viewport.scrollLeft;
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', (e) => {
+    const x = e.touches[0].pageX - viewport.offsetLeft;
+    const walk = (x - startX) * 1.2;
+    viewport.scrollLeft = scrollStart - walk;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', () => {
+    userInteracting = false;
+  });
+
+  /* Keyboard accessibility: left/right arrows when viewport focused */
+  viewport.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); scrollByPixels(-cardWidth()); pauseAutoplayTemporarily(); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); scrollByPixels(cardWidth()); pauseAutoplayTemporarily(); }
+  });
+
+  /* Autoplay: scroll one card every AUTOPLAY_MS, pause on interaction */
+  function startAutoplay() {
+    if (autoplayInterval) return;
+    autoplayInterval = setInterval(() => {
+      if (userInteracting) return; // do not autoplay while user interacting
+      // if near end, go to start smoothly
+      const maxScrollLeft = track.scrollWidth - viewport.clientWidth;
+      if (viewport.scrollLeft + cardWidth() > maxScrollLeft - 5) {
+        viewport.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        scrollByPixels(cardWidth());
+      }
+    }, AUTOPLAY_MS);
+  }
+  function stopAutoplay() {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+  }
+  function pauseAutoplayTemporarily() {
+    stopAutoplay();
+    // restart after a delay
+    setTimeout(() => startAutoplay(), 3000);
+  }
+
+  /* Pause autoplay on hover/focus */
+  viewport.addEventListener('mouseenter', () => { userInteracting = true; stopAutoplay(); });
+  viewport.addEventListener('mouseleave', () => { userInteracting = false; startAutoplay(); });
+  viewport.addEventListener('focusin', () => { userInteracting = true; stopAutoplay(); });
+  viewport.addEventListener('focusout', () => { userInteracting = false; startAutoplay(); });
+
+  /* Start autoplay on load */
+  window.addEventListener('load', startAutoplay);
+
+  /* Resize handler — ensures we use up-to-date card width */
+  window.addEventListener('resize', () => { /* nothing else needed, cardWidth reads current value */ });
+
+})();

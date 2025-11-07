@@ -199,7 +199,7 @@
 
 .stat-box p {
   font-size: 1rem;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 /* hero section end */
@@ -285,7 +285,7 @@ body {
 }
 
 .faq-section {
-  padding: 50px 20px;
+  padding: 30px 20px;
 }
 
 .text-center {
@@ -650,90 +650,124 @@ body {
     border-bottom-color: var(--primary);
 }
 
-
-/* Testimonial Section Styling */
+/* Container */
 .testimonial-section {
   background: #f9fbff;
-  padding: 60px 20px;
-  text-align: center;
-  overflow: hidden;
-}
-
-.testimonial-title {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 40px;
+  padding: 30px 0px 30px; /* extra bottom padding to avoid cutting */
+  overflow: visible;
   color: #0a3d62;
 }
 
-.testimonial-container {
-  position: relative;
-  overflow: hidden;
-  max-width: 1000px;
-  margin: 0 auto;
+/* Title */
+.testimonial-section .section-title {
+  font-size: 28px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  color: #0a3d62;
 }
 
+/* Wrapper & Buttons */
+.testimonial-wrapper {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Buttons */
+.testimonial-btn {
+  background: #0a3d62;
+  color: #fff;
+  border: none;
+  width: 68px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(10,61,98,0.12);
+}
+.testimonial-btn:focus { outline: 3px solid rgba(10,61,98,0.15); }
+.testimonial-btn[disabled] { opacity: .45; cursor: default; }
+
+/* Viewport and track (scrollable container) */
+.testimonial-viewport {
+  flex: 1 1 auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  outline: none; /* visible focus is on buttons */
+}
+
+/* Hide native scrollbar */
+.testimonial-viewport::-webkit-scrollbar { display: none; }
+.testimonial-viewport { scrollbar-width: none; }
+
+/* Track with cards in a row */
 .testimonial-track {
   display: flex;
   gap: 20px;
-  animation: scrollTestimonials 35s linear infinite;
+  padding-bottom: 8px; /* avoid cut-off shadows */
 }
 
+/* Single card */
 .testimonial-card {
-  flex: 0 0 320px;
+  flex: 0 0 320px;          /* card width */
+  scroll-snap-align: center;
   background: #fff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 8px 24px rgba(9,30,66,0.06);
   text-align: left;
+  min-height: 220px;
+  box-sizing: border-box;
 }
 
+/* Review text */
 .testimonial-card .review {
-  font-size: 16px;
+  font-size: 15.5px;
   color: #333;
   line-height: 1.6;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   font-style: italic;
 }
 
+/* Author */
 .testimonial-card .author {
-  font-weight: bold;
+  font-weight: 700;
   color: #0a3d62;
   font-size: 15px;
 }
+.testimonial-card .author span { font-weight: 400; color: #6c757d; font-size: 13px; }
 
-.testimonial-card .author span {
-  font-weight: normal;
-  color: #777;
-}
-
+/* Avatar circle */
 .author-photo {
-  width: 80px;             /* size of the circle */
-  height: 80px;
-  margin: 0 auto 15px;     /* center + spacing below */
-  border: 3px solid #0a3d62; /* border color */
-  border-radius: 50%;      /* make it round */
-  overflow: hidden;        /* crop image inside circle */
+  width: 72px;
+  height: 72px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #0a3d62;
+}
+.author-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .testimonial-btn.prev { display: none; } /* optional: hide left button on very small screens */
+  .testimonial-btn.next { display: none; } /* optional: hide right button on very small screens */
+  .testimonial-card { flex: 0 0 85%; }    /* larger card on mobile */
+  .testimonial-wrapper { gap: 8px; }
 }
 
-.author-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;       /* keep proportions, fill circle */
-  display: block;
+/* Make sure cards aren't cut on small heights */
+@media (max-height: 600px) {
+  .testimonial-section { padding-bottom: 110px; }
 }
-
-
-/* Animation for scrolling */
-@keyframes scrollTestimonials {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
 
 
 /* Footer Styles */
@@ -991,7 +1025,7 @@ body {
 
 /* basic container */
 .gallery-section {
-  padding: 60px 20px;
+  padding: 30px 20px;
   background: #fbfdff;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color: #0b2a4a;
@@ -1296,7 +1330,7 @@ body {
 /* Blog Section */
 .blog-section {
   background: #f9f9f9;
-  padding: 70px 20px;
+  padding: 30px 10px;
   text-align: center;
 }
 
@@ -1367,3 +1401,6 @@ body {
 .read-more:hover {
   color: #003d82;
 }
+
+
+
